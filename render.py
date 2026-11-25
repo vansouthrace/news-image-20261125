@@ -84,16 +84,22 @@ def scene_hack(d, x, y, w, h):
     for i, xx in enumerate((0.20, 0.42, 0.64, 0.86)):
         d.line([x + w * xx, y + h * 0.80, x + w * xx, y + h * 0.88],
                fill=(235, 90, 70), width=3)
-    d.text((x + 10, y + h - 26), "BREACH", font=load(BOLD, 18),
+    # BREACH sits top-left, clear of the tick marks at the bottom
+    d.text((x + 10, y + 8), "BREACH", font=load(BOLD, 18),
            fill=(235, 90, 70))
 
 
 def scene_ship(d, x, y, w, h):
-    # grey warship on dark water under a small drone
+    # grey warship on dark water under a small quadcopter drone
     d.rectangle([x, y, x + w, y + h], fill=SKY)
-    d.polygon([(x + w * 0.55, y + h * 0.10), (x + w * 0.72, y + h * 0.10),
-               (x + w * 0.72, y + h * 0.22), (x + w * 0.55, y + h * 0.22)],
-              fill=(60, 60, 60))
+    cx, cy = x + w * 0.63, y + h * 0.16
+    d.line([cx - 28, cy - 10, cx + 28, cy - 10], fill=(60, 60, 60), width=3)
+    d.line([cx - 28, cy + 10, cx + 28, cy + 10], fill=(60, 60, 60), width=3)
+    d.ellipse([cx - 34, cy - 14, cx - 22, cy - 6], fill=(90, 90, 90))
+    d.ellipse([cx + 22, cy - 14, cx + 34, cy - 6], fill=(90, 90, 90))
+    d.ellipse([cx - 34, cy + 6, cx - 22, cy + 14], fill=(90, 90, 90))
+    d.ellipse([cx + 22, cy + 6, cx + 34, cy + 14], fill=(90, 90, 90))
+    d.ellipse([cx - 14, cy - 7, cx + 14, cy + 7], fill=(60, 60, 60))
     d.polygon([(x + w * 0.12, y + h * 0.52), (x + w * 0.88, y + h * 0.52),
                (x + w * 0.78, y + h * 0.72), (x + w * 0.22, y + h * 0.72)],
               fill=(70, 78, 88))
@@ -183,7 +189,7 @@ def scene_jet(d, x, y, w, h):
 STORIES = [
     ("CYBERATTACK", RED, "US spy agencies hacked",
      "CIA and the Director of National Intelligence hit by a cyberattack on "
-     "unclassified systems, CNN reports; latest in a run of US breaches.",
+     "unclassified systems, the Times reports; latest in a run of breaches.",
      scene_hack),
     ("UKRAINE WAR", BLUE, "Kyiv confirms ship strikes",
      "Zelenskyy says Ukraine struck Russian ships in the Gulf of Finland "
@@ -256,14 +262,15 @@ def build():
     strip_y = top + 2 * ph + gap + 14
     d.rounded_rectangle([margin, strip_y, SIZE - margin, SIZE - 24],
                         radius=10, fill=DARK2)
-    d.text((margin + 16, strip_y + 12), "ALSO TODAY",
+    d.text((margin + 16, strip_y + 10), "ALSO TODAY",
            font=load(BOLD, 18), fill=(250, 210, 90))
-    yy = strip_y + 42
+    # six items must fit inside the strip: start higher, tighter leading
+    yy = strip_y + 36
     small = load(SANS, 15)
     for item in ALSO:
         d.text((margin + 16, yy), "\u2022  " + item, font=small,
                fill=(235, 238, 242))
-        yy += 22
+        yy += 19
     img.save("entry.png", optimize=True)
     print("wrote entry.png")
 
